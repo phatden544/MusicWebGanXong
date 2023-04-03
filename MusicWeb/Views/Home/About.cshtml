@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "Music Player";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Music</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>Upload Your Music</h1>
+    @using (Html.BeginForm("Upload", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <label for="songFile">Choose Your Music File:</label>
+        <input type="file" id="songFile" name="SongFile" accept=".mp3,.wav" required><br>
+
+        <label for="songTitle">Song Title:</label>
+        <input type="text" id="songTitle" name="SongTitle" required><br>
+
+        <label for="artistName">Artist Name:</label>
+        <input type="text" id="artistName" name="ArtistName" required><br>
+
+        <label for="genre">Genre:</label>
+        <select id="genre" name="Genre" required>
+            <option value="pop">Pop</option>
+            <option value="rock">Rock</option>
+            <option value="hiphop">Hip-Hop</option>
+            <option value="country">Country</option>
+            <option value="others">Others</option>
+        </select><br>
+
+        <label for="albumName">Album Name:</label>
+        <input type="text" id="albumName" name="AlbumName" required><br>
+
+        <label for="releaseDate">Release Date:</label>
+        <input type="date" id="releaseDate" name="ReleaseDate" required><br>
+
+        <input type="submit" value="Upload">
+    }
+
+    <script>
+        // function to play the uploaded song
+        function playSong(songUrl) {
+            var audio = new Audio(songUrl);
+            audio.play();
+        }
+
+        // listen for the form submission event
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // prevent the default form submission behavior
+
+            // create a FormData object and append the form data to it
+            var formData = new FormData();
+            formData.append('songFile', document.querySelector('#songFile').files[0]);
+            formData.append('songTitle', document.querySelector('#songTitle').value);
+            formData.append('artistName', document.querySelector('#artistName').value);
+            formData.append('genre', document.querySelector('#genre').value);
+            formData.append('albumName', document.querySelector('#albumName').value);
+            formData.append('releaseDate', document.querySelector('#releaseDate').value);
+
+            // send the form data to the server using AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '@Url.Action("Upload", "Home")', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var songUrl = xhr.responseText; // retrieve the URL of the uploaded song
+                    playSong(songUrl); // play the uploaded song
+                } else {
+                    alert('Upload failed. Please try again.'); // show an error message if the upload fails
+                }
+            };
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html>
