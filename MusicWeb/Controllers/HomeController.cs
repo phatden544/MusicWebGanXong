@@ -33,6 +33,7 @@ namespace MusicWeb.Controllers
         [HttpGet]
         public ActionResult UploadNhac()
         {
+            
             List<BaiHat> audiolist = new List<BaiHat>();
             string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
             using (SqlConnection con = new SqlConnection(CS))
@@ -57,50 +58,87 @@ namespace MusicWeb.Controllers
         [HttpPost]
         public ActionResult UploadNhac(HttpPostedFileBase fileupload, string artist, HttpPostedFileBase pictureupload)
         {
-            if (fileupload != null)
+            if (!User.Identity.IsAuthenticated)
             {
-                string fileName = Path.GetFileName(fileupload.FileName);
-                int fileSize = fileupload.ContentLength;
-                int Size = fileSize / 1000000;
-                fileupload.SaveAs(Server.MapPath("~/NHAC/" + fileName));
-
-                string pictureName = "";
-                if (pictureupload != null)
-                {
-                    pictureName = Path.GetFileName(pictureupload.FileName);
-                    pictureupload.SaveAs(Server.MapPath("~/HINH/" + pictureName));
-                }
-
-                string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
-                using (SqlConnection con = new SqlConnection(CS))
-                {
-                    SqlCommand cmd = new SqlCommand("spAddNewAudioFile", con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@Tenbaihat", fileName);
-                    cmd.Parameters.AddWithValue("@Linkbaihat", "~/NHAC/" + fileName);
-                    cmd.Parameters.AddWithValue("@Hinhbaihat", "~/HINH/" + pictureName);
-                    cmd.Parameters.AddWithValue("@casi", artist);
-                    cmd.ExecuteNonQuery();
-                }
+                return RedirectToAction("Login", "Account");
             }
-            return RedirectToAction("UploadNhac");
+            else
+            {
+                if (fileupload != null)
+                {
+                    string fileName = Path.GetFileName(fileupload.FileName);
+                    int fileSize = fileupload.ContentLength;
+                    int Size = fileSize / 1000000;
+                    fileupload.SaveAs(Server.MapPath("~/NHAC/" + fileName));
+
+                    string pictureName = "";
+                    if (pictureupload != null)
+                    {
+                        pictureName = Path.GetFileName(pictureupload.FileName);
+                        pictureupload.SaveAs(Server.MapPath("~/HINH/" + pictureName));
+                    }
+
+                    string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
+                    using (SqlConnection con = new SqlConnection(CS))
+                    {
+                        SqlCommand cmd = new SqlCommand("spAddNewAudioFile", con);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        con.Open();
+                        cmd.Parameters.AddWithValue("@Tenbaihat", fileName);
+                        cmd.Parameters.AddWithValue("@Linkbaihat", "~/NHAC/" + fileName);
+                        cmd.Parameters.AddWithValue("@Hinhbaihat", "~/HINH/" + pictureName);
+                        cmd.Parameters.AddWithValue("@casi", artist);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                return RedirectToAction("UploadNhac");
+            }
+            
         }
         [HttpPost]
         public ActionResult DeleteAudio(int id)
         {
-            string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
-            using (SqlConnection con = new SqlConnection(CS))
+            if (!User.Identity.IsAuthenticated)
             {
-                SqlCommand cmd = new SqlCommand("spDeleteAudioFile", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@id", id);
-                con.Open();
-                cmd.ExecuteNonQuery();
+                return RedirectToAction("Login", "Account");
             }
-            return RedirectToAction("UploadNhac");
+            else
+            {
+                string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
+                using (SqlConnection con = new SqlConnection(CS))
+                {
+                    SqlCommand cmd = new SqlCommand("spDeleteAudioFile", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    // Get the file paths of the picture and music files to be deleted
+                    string query = "SELECT Hinhbaihat, linkbaihat FROM BaiHat WHERE idbaihat=@id";
+                    using (SqlCommand selectCmd = new SqlCommand(query, con))
+                    {
+                        selectCmd.Parameters.AddWithValue("@id", id);
+                        con.Open();
+                        SqlDataReader reader = selectCmd.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            string hinhPath = Server.MapPath(reader["Hinhbaihat"].ToString());
+                            string nhacPath = Server.MapPath(reader["linkbaihat"].ToString());
+
+                            // Delete the files from the file system
+                            System.IO.File.Delete(hinhPath);
+                            System.IO.File.Delete(nhacPath);
+                        }
+                        reader.Close();
+                    }
+
+                    // Delete the record from the database
+                    cmd.ExecuteNonQuery();
+                }
+                return RedirectToAction("UploadNhac");
+            }
+            
         }
+
     }
 
-    
+
 }
