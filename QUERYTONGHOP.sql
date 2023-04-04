@@ -8,8 +8,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+drop table [BaiHat]
+go
+
 CREATE TABLE [dbo].[BaiHat](
-	[idbaihat] int NOT NULL , 
+	[idbaihat] int IDENTITY(1,1) NOT NULL,
 	[idAlbum] [nchar](10) NULL,
 	[idtheloai] [nchar](10) NULL,
 	[idplaylist] [nchar](10) NULL,
@@ -60,10 +63,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+drop table [Playlist]
+go
+
 CREATE TABLE [dbo].[Playlist](
-	[idPlaylist] INT NOT NULL,
-	[tenplaylist] [nvarchar](50) NULL,
-	[hinh] [nvarchar](50) NULL,
+	[idPlaylist] INT IDENTITY(1,1) NOT NULL,
+	[tenplaylist] [nvarchar](100) NULL,
+	[hinh] [nvarchar](100) NULL,
  CONSTRAINT [PK_dbo.Playlist] PRIMARY KEY CLUSTERED 
 (
 	[idPlaylist] ASC
@@ -73,6 +79,23 @@ GO
 
 
 ------------------------
+
+drop procedure [spAddNewAudioFile]
+go
+drop procedure [spGetAllAudioFile]
+go
+drop procedure spGetAudioFileById
+go
+drop procedure [spDeleteAudioFile]
+go
+drop procedure [spGetAllPlayList]
+go
+drop procedure [spAddNewPlayList]
+go
+drop procedure spDeletePlaylist
+go
+
+
 
 CREATE procedure [dbo].[spAddNewAudioFile]  
 (  
@@ -112,3 +135,28 @@ BEGIN
     DELETE FROM [BaiHat]
     WHERE idbaihat = @id
 END
+
+CREATE PROCEDURE spGetAllPlayList
+AS
+BEGIN
+    SELECT * FROM Playlist
+END
+
+CREATE PROCEDURE spAddNewPlayList
+    @tenplaylist nvarchar(100),
+    @hinh nvarchar(100)
+AS
+BEGIN
+    INSERT INTO Playlist (tenplaylist, hinh)
+    VALUES (@tenplaylist, @hinh)
+END
+
+CREATE PROCEDURE spDeletePlaylist
+    @idPlaylist INT
+AS
+BEGIN
+   
+    DELETE FROM [dbo].[Playlist]
+    WHERE [idPlaylist] = @idPlaylist;
+END
+
