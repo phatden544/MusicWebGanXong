@@ -1,4 +1,4 @@
-namespace MusicWeb
+namespace MusicWeb.Models
 {
     using System;
     using System.Collections.Generic;

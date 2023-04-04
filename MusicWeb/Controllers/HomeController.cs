@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.IO;
+using MusicWeb.Models;
 
 namespace MusicWeb.Controllers
 {
@@ -45,7 +46,7 @@ namespace MusicWeb.Controllers
                 while (rdr.Read())
                 {
                     BaiHat audio = new BaiHat();
-                    audio.idbaihat = rdr["idbaihat"].ToString();
+                    audio.idbaihat = (int)rdr["idbaihat"];
                     audio.Tenbaihat = rdr["Tenbaihat"].ToString();
                     audio.linkbaihat = rdr["linkbaihat"].ToString();
                     audio.casi = rdr["casi"].ToString();
@@ -137,8 +138,74 @@ namespace MusicWeb.Controllers
             }
             
         }
+       
+        
+        [HttpGet]
+        public ActionResult CreatePlaylist()
+        {
+
+            List<Playlist> playlist = new List<Playlist>();
+            string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(CS))
+            {
+                SqlCommand cmd = new SqlCommand("spGetAllPlayList", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    Playlist list = new Playlist();
+                    list.idPlaylist = (int)rdr["idPlaylist"];
+                    list.tenplaylist = rdr["tenplaylist"].ToString();
+                    list.hinh = rdr["hinh"].ToString();
+                    playlist.Add(list);
+                }
+            }
+            return View(playlist);
+        }
+        [HttpPost]
+        public ActionResult CreatePlaylist(HttpPostedFileBase fileupload, string tenplaylist, HttpPostedFileBase pictureupload)
+        {
+            
+            string pictureName = "";
+            if (pictureupload != null)
+            {
+                pictureName = Path.GetFileName(pictureupload.FileName);
+                pictureupload.SaveAs(Server.MapPath("~/HINH/" + pictureName));
+            }
+
+            string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(CS))
+            {
+                SqlCommand cmd = new SqlCommand("spAddNewPlayList", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                con.Open();
+                cmd.Parameters.AddWithValue("@hinh", "~/HINH/" + pictureName);
+                cmd.Parameters.AddWithValue("@tenplaylist", tenplaylist);
+                cmd.ExecuteNonQuery();
+            }
+
+            ModelState.AddModelError("", "Please choose a valid image file.");
+
+            return RedirectToAction("CreatePlaylist");
+        }
+        [HttpPost]
+        public ActionResult DeletePlaylist(int idPlaylist)
+        {
+            string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(CS))
+            {
+                SqlCommand cmd = new SqlCommand("spDeletePlaylist", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@idPlaylist", idPlaylist);
+                con.Open();
+                cmd.ExecuteNonQuery();
+            }
+            return RedirectToAction("CreatePlaylist");
+        }
 
     }
+
 
 
 }

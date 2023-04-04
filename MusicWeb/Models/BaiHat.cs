@@ -1,4 +1,4 @@
-namespace MusicWeb
+namespace MusicWeb.Models
 {
     using System;
     using System.Collections.Generic;
@@ -9,18 +9,22 @@ namespace MusicWeb
     [Table("BaiHat")]
     public partial class BaiHat
     {
+        internal readonly object idplaylist;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public BaiHat()
+        {
+            chitiet_Playlist = new HashSet<chitiet_Playlist>();
+        }
+
         [Key]
-        [StringLength(10)]
-        public string idbaihat { get; set; }
+        public int idbaihat { get; set; }
 
         [StringLength(10)]
         public string idAlbum { get; set; }
 
         [StringLength(10)]
         public string idtheloai { get; set; }
-
-        [StringLength(10)]
-        public string idplaylist { get; set; }
 
         [StringLength(50)]
         public string Tenbaihat { get; set; }
@@ -36,7 +40,8 @@ namespace MusicWeb
 
         public virtual Album Album { get; set; }
 
-        public virtual Playlist Playlist { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<chitiet_Playlist> chitiet_Playlist { get; set; }
 
         public virtual TheLoai TheLoai { get; set; }
     }

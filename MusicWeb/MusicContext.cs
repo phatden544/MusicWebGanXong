@@ -1,3 +1,4 @@
+using MusicWeb.Models;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -31,8 +32,8 @@ namespace MusicWeb
                 .HasForeignKey(e => e.idtheloai);
 
             modelBuilder.Entity<BaiHat>()
-                .Property(e => e.idbaihat)
-                .IsFixedLength();
+                .Property(e => e.idbaihat);
+           //     .IsFixedLength();
 
             modelBuilder.Entity<BaiHat>()
                 .Property(e => e.idAlbum)
@@ -42,9 +43,7 @@ namespace MusicWeb
                 .Property(e => e.idtheloai)
                 .IsFixedLength();
 
-            modelBuilder.Entity<BaiHat>()
-                .Property(e => e.idplaylist)
-                .IsFixedLength();
+           
 
             modelBuilder.Entity<Casi>()
                 .Property(e => e.idAlbum)
@@ -59,13 +58,10 @@ namespace MusicWeb
                 .WithRequired(e => e.ChuDe);
 
             modelBuilder.Entity<Playlist>()
-                .Property(e => e.idPlaylist)
-                .IsFixedLength();
+                .Property(e => e.idPlaylist);
+        //        .IsFixedLength();
 
-            modelBuilder.Entity<Playlist>()
-                .HasOptional(e => e.BaiHat)
-                .WithRequired(e => e.Playlist);
-
+           
             modelBuilder.Entity<TheLoai>()
                 .Property(e => e.idtheloai)
                 .IsFixedLength();
