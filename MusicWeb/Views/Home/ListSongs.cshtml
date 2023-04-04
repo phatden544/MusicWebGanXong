@@ -1,0 +1,41 @@
+﻿@model List<MusicWeb.Models.BaiHat>
+
+<script>
+    function playSong(linkbaihat, hinhanhbia) {
+        var audio = document.getElementById("song");
+        audio.src = linkbaihat;
+        audio.load();
+        audio.play();
+        document.querySelectorAll("#song-img").forEach(function (img) {
+            img.src = hinhanhbia;
+        });
+    }
+
+    
+</script>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th class="album-cover">Ảnh bìa</th>
+            <th>Tên bài hát</th>
+            <th>Tên nghệ sĩ</th>
+            <th>Phát nhạc</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var song in Model)
+        {
+            <tr class="song-item" data-link="@Url.Content(song.linkbaihat)" data-coverimage="@Url.Content(song.Hinhbaihat)">
+                <td class="album-cover">
+                    <img class="song-image" src="@Url.Content(song.Hinhbaihat)" width="100" height="100" onclick="playSongAndChangeImg('@Url.Content(song.linkbaihat)', '@Url.Content(song.Hinhbaihat)')">
+                </td>
+                <td>@song.Tenbaihat</td>
+                <td>@song.casi</td>
+                <td>@song.linkbaihat</td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>

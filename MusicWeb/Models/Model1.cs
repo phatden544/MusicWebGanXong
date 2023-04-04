@@ -19,9 +19,10 @@ namespace MusicWeb.Models
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<BaiHat> BaiHats { get; set; }
+        public virtual DbSet<Playlist> Playlists { get; set; }
         public virtual DbSet<Casi> Casis { get; set; }
         public virtual DbSet<ChuDe> ChuDes { get; set; }
-        public virtual DbSet<Playlist> Playlists { get; set; }
+        
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<TheLoai> TheLoais { get; set; }
 

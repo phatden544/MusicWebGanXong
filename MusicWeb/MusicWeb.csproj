@@ -190,6 +190,7 @@
     <Compile Include="Models\AspNetUserClaim.cs" />
     <Compile Include="Models\AspNetUserLogin.cs" />
     <Compile Include="Models\BaiHat.cs" />
+    <Compile Include="Models\BaiHatAndPlaylist.cs" />
     <Compile Include="Models\Casi.cs" />
     <Compile Include="Models\chitiet_Playlist.cs" />
     <Compile Include="Models\ChuDe.cs" />
@@ -269,6 +270,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\UploadNhac.cshtml" />
     <Content Include="Views\Home\CreatePlaylist.cshtml" />
+    <Content Include="Views\Home\ListSongs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

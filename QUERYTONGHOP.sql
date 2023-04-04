@@ -16,10 +16,10 @@ CREATE TABLE [dbo].[BaiHat](
 	[idAlbum] [nchar](10) NULL,
 	[idtheloai] [nchar](10) NULL,
 	[idplaylist] [nchar](10) NULL,
-	[Tenbaihat] [nvarchar](50) NULL,
-	[Hinhbaihat] [nvarchar](50) NULL,
+	[Tenbaihat] [nvarchar](100) NULL,
+	[Hinhbaihat] [nvarchar](100) NULL,
 	[casi] [nvarchar](50) NULL,
-	[linkbaihat] [nvarchar](50) NULL,
+	[linkbaihat] [nvarchar](100) NULL,
  CONSTRAINT [PK_dbo.BaiHat] PRIMARY KEY CLUSTERED 
 (
 	[idbaihat] ASC
@@ -103,7 +103,7 @@ CREATE procedure [dbo].[spAddNewAudioFile]
 @Tenbaihat nvarchar(50),  
 @casi nvarchar(50),
 @linkbaihat nvarchar(100) ,
-@Hinhbaihat nvarchar(50)
+@Hinhbaihat nvarchar(100)
 )  
 as  
 begin  

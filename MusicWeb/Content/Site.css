@@ -1,30 +1,281 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', sans-serif;
+    box-sizing: border-box;
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.backgroundall {
+    /*    align-items: center;*/
+    justify-content: center;
+    display: flex;
+    flex-wrap: nowrap;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
+.container {
+    display: flex;
+    width: 100%;
+    height: 90vh;
+    background: rgba(0, 0, 0, 0);
+    align-items: start;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    position: relative;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+.searchbox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    margin-top: 25px;
+    margin-left: 50px;
 }
 
-.navbar-inverse .navbar-toggle:hover,
-.navbar-inverse .navbar-toggle:focus {
-    background-color: #777;
-    border-color: #fff
+    .searchbox input[type=text] {
+        float: right;
+        padding: 6px;
+        width: 400px;
+        border: none;
+        background: rgba(0,0,0,0);
+        margin-left: 6px;
+        font-size: 17px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .searchbox input[type=text]:focus {
+            outline: 4px #373737;
+        }
+
+.accountbar {
+    margin-top: 18px;
+    margin-left: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 0px;
 }
+
+    .accountbar div {
+        width: 40px;
+        height: 40px;
+        margin: 10px;
+        background: #ffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: #373737;
+        cursor: pointer;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+.progressbar {
+    display: flex;
+    width: 100%;
+    height: 10vh;
+    background: #fff;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    padding: 25px 35px;
+}
+
+    .progressbar > * {
+        margin-right: 20px;
+    }
+
+        /* Bỏ margin-right của phần tử cuối cùng */
+        .progressbar > *:last-child {
+            margin-right: 0;
+        }
+
+.current-time {
+    font-family: 'Helvetica Neue', sans-serif;
+    color: #7f7f7f;
+    font-size: 12px;
+}
+
+.total-duration {
+    font-family: 'Helvetica Neue', sans-serif;
+    color: #7f7f7f;
+    font-size: 12px;
+}
+
+.navbar {
+    padding: 10px 0px;
+    width: 100px;
+    height: 100%;
+    background: #373737;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 20px;
+    border-radius: 10%;
+    margin-bottom: 2px;
+}
+
+.thumbblur {
+    position: absolute;
+    z-index: 0;
+    width: 650px;
+    opacity: 30%;
+    padding: 10px, 500px;
+    filter: blur(30px);
+    display: flex;
+    border-radius: 5%;
+}
+
+.menu {
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+    .menu div {
+        width: 60px;
+        height: 60px;
+        margin: 4px;
+        /*  background: #ffff;*/
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        cursor: pointer;
+    }
+.repeat-button.active {
+    background-color: #fff;
+}
+
+.music-player {
+    background-color: rgba(0, 0, 0, 0.05);
+    position: relative;
+    width: 400px;
+    height: 100%;
+    padding: 25px 35px;
+    text-align: center;
+    border-radius: 5%;
+    margin-left: 10px;
+    /* margin-top: 20px;*/
+    margin-bottom: 10px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+    nav .circle {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        color: #333;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.22);
+    }
+
+.song-img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 98%;
+    border-radius: 10%;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+#volume {
+    -webkit-appearance: none;
+    width: 50px;
+    height: 4px;
+    background: #373737;
+    color: #373737;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 40px 0;
+}
+
+    #volume::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        background: #ffffff;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: 3px solid #373737
+    }
+
+#progress {
+    width: 100%;
+    height: 3.5px;
+    background: #373737;
+    color: #373737;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 40px 0;
+}
+
+    #progress::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        background: #ffffff;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        border: 3px solid #373737;
+        opacity: 0;
+        transition: opacity;
+    }
+
+    #progress:hover::-webkit-slider-thumb {
+        opacity: 1;
+    }
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .controls div {
+        width: 60px;
+        height: 60px;
+        margin: 4px;
+        background: #ffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: #373737;
+        cursor: pointer;
+    }
+
+        .controls div:nth-child(3) {
+            background: #373737;
+            color: #fff;
+        }
+
+.pcontrols {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .pcontrols div {
+        width: 10px;
+        height: 60px;
+        margin: 10px;
+        background: #ffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: #373737;
+        cursor: pointer;
+    }

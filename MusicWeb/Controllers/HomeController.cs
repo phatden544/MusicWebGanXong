@@ -76,6 +76,8 @@ namespace MusicWeb.Controllers
                     if (pictureupload != null)
                     {
                         pictureName = Path.GetFileName(pictureupload.FileName);
+                        string pictureExtension = Path.GetExtension(pictureName);
+                        pictureName = Path.ChangeExtension(pictureName, pictureExtension.ToLower());
                         pictureupload.SaveAs(Server.MapPath("~/HINH/" + pictureName));
                     }
 
@@ -94,8 +96,8 @@ namespace MusicWeb.Controllers
                 }
                 return RedirectToAction("UploadNhac");
             }
-            //asdw
         }
+
         [HttpPost]
         public ActionResult DeleteAudio(int id)
         {
@@ -159,8 +161,11 @@ namespace MusicWeb.Controllers
                     list.tenplaylist = rdr["tenplaylist"].ToString();
                     list.hinh = rdr["hinh"].ToString();
                     playlist.Add(list);
+                    ViewBag.Playlist = new SelectList(playlist, "idPlaylist", "tenplaylist");
                 }
+
             }
+
             return View(playlist);
         }
         [HttpPost]
@@ -203,6 +208,34 @@ namespace MusicWeb.Controllers
             }
             return RedirectToAction("CreatePlaylist");
         }
+        public ActionResult ListSongs()
+        {
+            List<BaiHat> songsList = new List<BaiHat>();
+            List<string> coverImages = new List<string>(); // tạo một mảng lưu trữ tất cả các ảnh bìa
+            string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(CS))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT * FROM BaiHat", con);
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    BaiHat song = new BaiHat();
+                    song.idbaihat = (int)rdr["idbaihat"];
+                    song.Tenbaihat = rdr["Tenbaihat"].ToString();
+                    song.linkbaihat = rdr["linkbaihat"].ToString();
+                    song.casi = rdr["casi"].ToString();
+                    song.Hinhbaihat = rdr["Hinhbaihat"].ToString();
+                    songsList.Add(song);
+                    coverImages.Add(rdr["Hinhbaihat"].ToString()); // thêm đường dẫn ảnh bìa vào mảng coverImages
+                }
+            }
+            ViewBag.CoverImages = coverImages; // gán mảng coverImages vào ViewBag để sử dụng trong view
+            return View(songsList);
+        }
+
+
+
 
     }
 

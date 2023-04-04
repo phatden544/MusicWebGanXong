@@ -39,5 +39,9 @@ namespace MusicWeb.Models
         public virtual TheLoai TheLoai { get; set; }
         [InverseProperty("playlist")]
         public virtual ICollection<BaiHat> BaiHats { get; set; }
+
+
+
+
     }
 }

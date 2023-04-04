@@ -1,46 +1,309 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0">
+    <title>Musik</title>
+    <link rel="stylesheet" href="~/Content/Site.css">
+    <style>
 
+    </style>
+    <script src="https://kit.fontawesome.com/60e83084da.js" crossorigin="anonymous"></script>
+    @RenderSection("head", false)
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" title="more options">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Upload Nhac", "UploadNhac", "Home")</li>
-                    <li>@Html.ActionLink("Create Playlist", "CreatePlaylist", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+
+    <div class="backgroundall">
+        <img src="~/Hinh/Default.jpg" class="thumbblur" id="song-img" onerror="imgError(this);">
+
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    <div class="container">
+        <div class="navbar">
+            <img src="~/HINH/logo.png" class="logo">
+            <h4>MUSIK</h4>
+            <div class="menu">
+                <a href="@Url.Action("ListSongs", "Home")"><div><i class="fa-solid fa-house"></i></div></a>
+                <a href="@Url.Action("UploadNhac", "Home")"><div><i class="fa-solid fa-book-open"></i></div></a>
+                <a href="@Url.Action("CreatePlaylist", "Home")"><div><i class="fa-solid fa-plus"></i></div></a>
+
+            </div>
+        </div>
+        <div class="music-player">
+            <div class="background-overlay"></div>
+            <nav>
+                <div class="circle">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+                <div class="circle">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </nav>
+            <img src="~/Hinh/Default.jpg" class="song-img" id="song-img" onerror="imgError(this);">
+            <style>
+                img:before {
+                    content: ' ';
+                    display: block;
+                    position: absolute;
+                    height: 50px;
+                    width: 50px;
+                    background-image: url(ishere.jpg);
+                }
+            </style>
+
+            <h1>Em không</h1>
+            <p>Vũ Thanh Vân</p>
+
+            <audio id="song">
+                <source src="media/AAA.mp3" type="audio/mp3">
+            </audio>
+
+            <div class="controls">
+                <div onclick="toggleShuffle()"><i class="fa-solid fa-shuffle"></i></div>
+                <div onclick="skipSong()"><i class="fa-solid fa-backward-step"></i></div>
+                <div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
+                <div onclick="skipSong()"><i class="fa-solid fa-forward-step"></i></div>
+                <div onclick="repeatSong()"><i class="fa-solid fa-repeat"></i></div>
+            </div>
+            ...
+            <script>
+                function imgError(image) {
+                    image.onerror = "";
+                    image.src = "~/Hinh/Default.jpg";
+                    return true;
+                }
+
+                function checkImageSrc() {
+                    var image = document.getElementById("song-img");
+                    if (image.src === "") {
+                        image.src = "~/Hinh/Default.jpg";
+                    }
+                }
+
+                window.onload = checkImageSrc;
+
+                var index = 0; // Lưu trữ chỉ mục của bài hát đang được phát
+
+                function playSong(linkbaihat, hinhanhbia) {
+                    var audio = document.getElementById("song");
+                    audio.src = linkbaihat;
+                    audio.load();
+                    audio.play();
+                    document.querySelectorAll(".song-image").forEach(function (img) {
+                        img.src = hinhanhbia;
+                    });
+                }
+
+
+                function skipSong() {
+                    var currentSongImg = document.getElementById("song-img");
+
+                    // Cập nhật hình ảnh của phần tử hiện tại
+                    currentSongImg.src = "~/Hinh/Default.jpg";
+
+                    var songs = document.getElementsByClassName("song-item");
+                    index++;
+                    if (index >= songs.length) {
+                        index = 0;
+                    }
+                    var linkbaihat = songs[index].getAttribute("data-link");
+                    var coverImage = songs[index].getAttribute("data-coverimage");
+                    playSong(linkbaihat);
+                    updateSongInfo(songs[index]);
+
+                    // Lưu trữ phần tử hiện tại vào biến
+
+                }
+
+                function prevSong() {
+                    var songs = document.getElementsByClassName("song-item");
+                    index--;
+                    if (index < 0) {
+                        index = songs.length - 1;
+                    }
+                    var linkbaihat = songs[index].getAttribute("data-link");
+                    var coverImage = songs[index].getAttribute("data-coverimage");
+                    playSong(linkbaihat);
+                    updateSongInfo(songs[index]);
+                    document.getElementById("song-img").src = "~/Hinh/Default.jpg";
+                }
+                var isShuffleOn = false;
+
+                function shufflePlaylist() {
+                    var songs = document.getElementsByClassName("song-item");
+                    var currentIndex = index;
+                    var randomIndex = Math.floor(Math.random() * songs.length);
+                    while (randomIndex === currentIndex) {
+                        randomIndex = Math.floor(Math.random() * songs.length);
+                    }
+                    index = randomIndex;
+                    var linkbaihat = songs[index].getAttribute("data-link");
+                    playSong(linkbaihat);
+                    isShuffleOn = true;
+                }
+
+                function toggleShuffle() {
+                    if (isShuffleOn) {
+                        isShuffleOn = false;
+                    } else {
+                        shufflePlaylist();
+                    }
+                }
+
+
+                function repeatSong() {
+                    var audio = document.getElementById("song");
+                    if (audio.loop) {
+                        audio.loop = false;
+                        document.querySelector('.repeat-button').classList.remove('active');
+                    } else {
+                        audio.loop = true;
+                        document.querySelector('.repeat-button').classList.add('active');
+                    }
+                }
+
+            </script>
+        </div>
+        <div class="searchbox">
+            <div><i class="fa-solid fa-magnifying-glass"></i></div>
+            <input type="text" placeholder="Search..">
+        </div>
+        <div class="accountbar">
+            <a href="@Url.Action("Login", "Account")"><div><i class="fa-solid fa-user"></i></div></a>
+
+            <div><i class="fa-solid fa-cloud-arrow-up"></i></div>
+        </div>
+        @RenderBody()
+    </div>
+
+
+    
+    
+    <div class="progressbar">
+        <div class="current-time">00:00</div>
+        <input type="range" value="0" id="progress">
+        <div class="total-duration">00:00</div>
+        <div><i class="fa-solid fa-list-ul"></i></div>
+        <div class="pcontrols">
+
+            <div onclick="toggleMute()"><i class="fa-solid fa-volume-high"></i></div>
+        </div>
+        <input type="range" value="100" id="volume">
+    </div>
+
+    <script>
+
+        let progress = document.getElementById("progress");
+        let song = document.getElementById("song");
+        let ctrlIcon = document.getElementById("ctrlIcon");
+        song.onloadedmetadata = function () {
+            progress.max = song.duration;
+            progress.value = song.currentTime;
+        }
+        function playPause() {
+            if (song.paused || song.ended) {
+                song.play();
+                ctrlIcon.classList.remove("fa-play");
+                ctrlIcon.classList.add("fa-pause");
+            }
+            else {
+                song.pause();
+                ctrlIcon.classList.remove("fa-pause");
+                ctrlIcon.classList.add("fa-play");
+            }
+        }
+        song.onloadeddata = function () {
+            if (!song.paused && !song.ended) {
+                ctrlIcon.classList.remove("fa-play");
+                ctrlIcon.classList.add("fa-pause");
+            }
+        };
+
+        if (song.play()) {
+            setInterval(() => {
+                progress.value = song.currentTime;
+            }, 500)
+        }
+        progress.onchange = function () {
+            song.play();
+            song.currentTime = progress.value;
+            ctrlIcon.classList.remove("fa-play");
+            ctrlIcon.classList.add("fa-pause");
+        }
+        let currentTime = document.querySelector('.current-time');
+        let totalDuration = document.querySelector('.total-duration');
+
+        song.addEventListener('timeupdate', function () {
+            let current = Math.floor(song.currentTime);
+            let duration = Math.floor(song.duration);
+            currentTime.textContent = formatTime(current);
+            totalDuration.textContent = formatTime(duration);
+        });
+
+        function formatTime(seconds) {
+            let min = Math.floor(seconds / 60);
+            let sec = seconds % 60;
+            return (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
+        }
+        let volumeControl = document.getElementById("volume");
+
+        volumeControl.oninput = function () {
+            song.volume = this.value / 100;
+            let volumeIcon = document.querySelector(".pcontrols i");
+            if (this.value == 0) {
+                volumeIcon.classList.remove("fa-volume-high", "fa-volume-low");
+                volumeIcon.classList.add("fa-volume-xmark");
+            } else if (this.value < 50) {
+                volumeIcon.classList.remove("fa-volume-high", "fa-volume-xmark");
+                volumeIcon.classList.add("fa-volume-low");
+            } else {
+                volumeIcon.classList.remove("fa-volume-low", "fa-volume-xmark");
+                volumeIcon.classList.add("fa-volume-high");
+            }
+        };
+        let currentVolume = 100;
+        let volumeIcon = document.querySelector(".pcontrols i");
+
+        function playSongAndChangeImg(linkbaihat, hinhbaihat) {
+            var audio = document.getElementById("song");
+            audio.src = linkbaihat;
+            audio.load();
+            audio.play();
+            var songImgs = document.querySelectorAll("#song-img");
+            for (var i = 0; i < songImgs.length; i++) {
+                songImgs[i].src = hinhbaihat;
+            }
+        }
+
+        function toggleMute() {
+            if (song.volume == 0) {
+                // Unmute and set volume to previous value
+                song.volume = currentVolume / 100;
+                volumeControl.value = currentVolume;
+                volumeIcon.classList.remove("fa-volume-xmark");
+                volumeIcon.classList.add("fa-volume-high");
+            } else {
+                // Mute and remember volume value
+                currentVolume = volumeControl.value;
+                song.volume = 0;
+                volumeControl.value = 0;
+                volumeIcon.classList.remove("fa-volume-high");
+                volumeIcon.classList.add("fa-volume-xmark");
+            }
+
+        }
+        document.body.onkeyup = function (e) {
+            if (e.code === 'Space') {
+                playPause();
+            }
+            else if (e.code === 'KeyM') {
+                toggleMute();
+            }
+        };
+        song.addEventListener('ended', function () {
+            skipSong();
+        });
+    </script>
+    @RenderSection("scripts", false)
 </body>
+
 </html>
