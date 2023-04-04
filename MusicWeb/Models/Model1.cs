@@ -24,7 +24,6 @@ namespace MusicWeb.Models
         public virtual DbSet<Playlist> Playlists { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<TheLoai> TheLoais { get; set; }
-        public virtual DbSet<chitiet_Playlist> chitiet_Playlist { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -60,12 +59,6 @@ namespace MusicWeb.Models
                 .Property(e => e.idtheloai)
                 .IsFixedLength();
 
-            modelBuilder.Entity<BaiHat>()
-                .HasMany(e => e.chitiet_Playlist)
-                .WithRequired(e => e.BaiHat)
-                .HasForeignKey(e => e.idPlaylist)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<Casi>()
                 .Property(e => e.idAlbum)
                 .IsFixedLength();
@@ -79,9 +72,8 @@ namespace MusicWeb.Models
                 .WithRequired(e => e.ChuDe);
 
             modelBuilder.Entity<Playlist>()
-                .HasMany(e => e.chitiet_Playlist)
-                .WithRequired(e => e.Playlist)
-                .WillCascadeOnDelete(false);
+                .HasOptional(e => e.BaiHat)
+                .WithRequired(e => e.Playlist);
 
             modelBuilder.Entity<TheLoai>()
                 .Property(e => e.idtheloai)

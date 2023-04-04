@@ -9,12 +9,6 @@ namespace MusicWeb.Models
     [Table("Playlist")]
     public partial class Playlist
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Playlist()
-        {
-            chitiet_Playlist = new HashSet<chitiet_Playlist>();
-        }
-
         [Key]
         public int idPlaylist { get; set; }
 
@@ -24,7 +18,8 @@ namespace MusicWeb.Models
         [StringLength(100)]
         public string hinh { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<chitiet_Playlist> chitiet_Playlist { get; set; }
+        public virtual BaiHat BaiHat { get; set; }
+        [ForeignKey("idPlaylist")]
+        public virtual Playlist playlist { get; set; }
     }
 }

@@ -9,16 +9,10 @@ namespace MusicWeb.Models
     [Table("BaiHat")]
     public partial class BaiHat
     {
-        internal readonly object idplaylist;
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public BaiHat()
-        {
-            chitiet_Playlist = new HashSet<chitiet_Playlist>();
-        }
-
         [Key]
         public int idbaihat { get; set; }
+
+        public int? idPlaylist { get; set; }
 
         [StringLength(10)]
         public string idAlbum { get; set; }
@@ -40,9 +34,10 @@ namespace MusicWeb.Models
 
         public virtual Album Album { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<chitiet_Playlist> chitiet_Playlist { get; set; }
+        public virtual Playlist Playlist { get; set; }
 
         public virtual TheLoai TheLoai { get; set; }
+        [InverseProperty("playlist")]
+        public virtual ICollection<BaiHat> BaiHats { get; set; }
     }
 }
