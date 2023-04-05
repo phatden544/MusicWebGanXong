@@ -208,14 +208,20 @@ namespace MusicWeb.Controllers
             }
             return RedirectToAction("CreatePlaylist");
         }
-        public ActionResult ListSongs()
+        [HttpGet]
+        public ActionResult ListSongs(string searchQuery)
         {
             List<BaiHat> songsList = new List<BaiHat>();
             List<string> coverImages = new List<string>(); // tạo một mảng lưu trữ tất cả các ảnh bìa
             string CS = ConfigurationManager.ConnectionStrings["MusicContext"].ConnectionString;
             using (SqlConnection con = new SqlConnection(CS))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM BaiHat", con);
+                string query = "SELECT * FROM BaiHat";
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    query = "SELECT * FROM BaiHat WHERE Tenbaihat LIKE '%" + searchQuery + "%' OR casi LIKE '%" + searchQuery + "%'";
+                }
+                SqlCommand cmd = new SqlCommand(query, con);
                 con.Open();
                 SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
@@ -231,8 +237,12 @@ namespace MusicWeb.Controllers
                 }
             }
             ViewBag.CoverImages = coverImages; // gán mảng coverImages vào ViewBag để sử dụng trong view
+            ViewBag.SearchQuery = searchQuery; // truyền từ khóa tìm kiếm vào ViewBag để sử dụng trong view
             return View(songsList);
         }
+
+       
+
 
 
 

@@ -1,1 +1,22 @@
-﻿
+﻿@{
+    var hour = DateTime.Now.Hour;
+    var greeting = "Hello";
+    if (hour < 12)
+    {
+        greeting = "Good morning!";
+    }
+    else if (hour < 18)
+    {
+        greeting = "Good afternoon!";
+    }
+    else
+    {
+        greeting = "Good evening!";
+    }
+    if (User.Identity.IsAuthenticated)
+    {
+        greeting = "Welcome back, " + User.Identity.Name + "!";
+    }
+}
+
+<h1>@greeting</h1>

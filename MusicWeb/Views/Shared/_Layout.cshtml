@@ -19,11 +19,12 @@
 
     <div class="container">
         <div class="navbar">
+
             <img src="~/HINH/logo.png" class="logo">
             <h4>MUSIK</h4>
             <div class="menu">
-                <a href="@Url.Action("ListSongs", "Home")"><div><i class="fa-solid fa-house"></i></div></a>
-                <a href="@Url.Action("UploadNhac", "Home")"><div><i class="fa-solid fa-book-open"></i></div></a>
+                <a href="@Url.Action("Index", "Home")"><div><i class="fa-solid fa-house"></i></div></a>
+                <a href="@Url.Action("ListSongs", "Home")"><div><i class="fa-solid fa-book-open"></i></div></a>
                 <a href="@Url.Action("CreatePlaylist", "Home")"><div><i class="fa-solid fa-plus"></i></div></a>
 
             </div>
@@ -38,20 +39,29 @@
                     <i class="fa-solid fa-bars"></i>
                 </div>
             </nav>
-            <img src="~/Hinh/Default.jpg" class="song-img" id="song-img" onerror="imgError(this);">
+            <div class="song-img-wrapper">
+                <img src="~/Hinh/Default.jpg" class="song-img" alt="" id="song-img" onerror="imgError(this);">
+            </div>
             <style>
-                img:before {
-                    content: ' ';
+                .song-img {
                     display: block;
-                    position: absolute;
-                    height: 50px;
-                    width: 50px;
-                    background-image: url(ishere.jpg);
+                    margin-left: auto;
+                    margin-right: auto;
+                    width: 310px;
+                    height: 310px;
+                    border-radius: 10%;
+                    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+                    margin-bottom: 20px;
                 }
+
+                    .song-img:not([src]) {
+                        background-color: black;
+                    }
             </style>
 
-            <h1>Em không</h1>
-            <p>Vũ Thanh Vân</p>
+
+            <h1 class="titlesong"></h1>
+            <p class="artist"></p>
 
             <audio id="song">
                 <source src="media/AAA.mp3" type="audio/mp3">
@@ -62,9 +72,9 @@
                 <div onclick="skipSong()"><i class="fa-solid fa-backward-step"></i></div>
                 <div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
                 <div onclick="skipSong()"><i class="fa-solid fa-forward-step"></i></div>
-                <div onclick="repeatSong()"><i class="fa-solid fa-repeat"></i></div>
+                <div class="changable" onclick="repeatSong()"><i class="fa-solid fa-repeat"></i></div>
             </div>
-            ...
+
             <script>
                 function imgError(image) {
                     image.onerror = "";
@@ -83,22 +93,65 @@
 
                 var index = 0; // Lưu trữ chỉ mục của bài hát đang được phát
 
-                function playSong(linkbaihat, hinhanhbia) {
+
+                var currentCoverImage = '~/Hinh/Default.jpg';
+
+                function changeSongTitle(title) {
+                    var songTitles = document.querySelectorAll(".titlesong");
+                    for (var i = 0; i < songTitles.length; i++) {
+                        songTitles[i].innerText = title.substring(0, title.length - 4);
+                    }
+                }
+                function changeSongArtist(artist) {
+                    var songArtist = document.querySelectorAll(".artist");
+                    for (var i = 0; i < songTitles.length; i++) {
+                        songArtist[i].innerText = artist;
+                    }
+                }
+
+
+                function playSong(linkbaihat, hinhbaihat, Tenbaihat, casi) {
                     var audio = document.getElementById("song");
                     audio.src = linkbaihat;
                     audio.load();
                     audio.play();
-                    document.querySelectorAll(".song-image").forEach(function (img) {
-                        img.src = hinhanhbia;
-                    });
+                    var songImgs = document.querySelectorAll("#song-img");
+                    for (var i = 0; i < songImgs.length; i++) {
+                        songImgs[i].onerror = function () {
+                            this.src = currentCoverImage;
+                        };
+                        songImgs[i].src = hinhbaihat;
+                    }
+                    var songTitles = document.querySelectorAll(".titlesong");
+                    for (var i = 0; i < songTitles.length; i++) {
+                        songTitles[i].innerText = Tenbaihat;
+                    }
+                    var songArtist = document.querySelectorAll(".artist");
+                    for (var i = 0; i < songArtist.length; i++) {
+                        songArtist[i].innerText = casi;
+                    }
+                    changeSongTitle(Tenbaihat);
+                    changeSongArtist(casi)
+                    currentCoverImage = hinhbaihat;
                 }
 
+                function playSongAndChangeImg(linkbaihat, hinhbaihat, Tenbaihat) {
+                    var audio = document.getElementById("song");
+                    audio.src = linkbaihat;
+                    audio.load();
+                    audio.play();
+                    var songImgs = document.querySelectorAll("#song-img");
+                    for (var i = 0; i < songImgs.length; i++) {
+                        songImgs[i].src = hinhbaihat;
+                    }
+                    changeSongTitle(Tenbaihat); // Đổi tên bài hát
+                }
 
                 function skipSong() {
                     var currentSongImg = document.getElementById("song-img");
 
                     // Cập nhật hình ảnh của phần tử hiện tại
-                    currentSongImg.src = "~/Hinh/Default.jpg";
+                    currentSongImg.src = currentCoverImage;
 
                     var songs = document.getElementsByClassName("song-item");
                     index++;
@@ -107,11 +160,12 @@
                     }
                     var linkbaihat = songs[index].getAttribute("data-link");
                     var coverImage = songs[index].getAttribute("data-coverimage");
-                    playSong(linkbaihat);
+                    var Name = songs[index].getAttribute("data-name");
+                    var artist = songs[index].getAttribute("data-artist");
+                    playSong(linkbaihat, coverImage, Name, artist);
                     updateSongInfo(songs[index]);
 
                     // Lưu trữ phần tử hiện tại vào biến
-
                 }
 
                 function prevSong() {
@@ -122,9 +176,12 @@
                     }
                     var linkbaihat = songs[index].getAttribute("data-link");
                     var coverImage = songs[index].getAttribute("data-coverimage");
-                    playSong(linkbaihat);
+                    var Name = songs[index].getAttribute("data-name");
+                    var artist = songs[index].getAttribute("data-artist");
+                    playSong(linkbaihat, coverImage, Name, artist);
                     updateSongInfo(songs[index]);
-                    document.getElementById("song-img").src = "~/Hinh/Default.jpg";
+                    document.getElementById("song-img").src = currentCoverImage;
+
                 }
                 var isShuffleOn = false;
 
@@ -137,15 +194,18 @@
                     }
                     index = randomIndex;
                     var linkbaihat = songs[index].getAttribute("data-link");
-                    playSong(linkbaihat);
-                    isShuffleOn = true;
+                    var coverImage = songs[index].getAttribute("data-coverimage");
+                    var Name = songs[index].getAttribute("data-name");
+                    var artist = songs[index].getAttribute("data-artist");
+                    playSong(linkbaihat, coverImage, Name, artist);
+                    
                 }
 
                 function toggleShuffle() {
                     if (isShuffleOn) {
                         isShuffleOn = false;
                     } else {
-                        shufflePlaylist();
+                        isShuffleOn = true;
                     }
                 }
 
@@ -155,23 +215,95 @@
                     if (audio.loop) {
                         audio.loop = false;
                         document.querySelector('.repeat-button').classList.remove('active');
+
                     } else {
                         audio.loop = true;
                         document.querySelector('.repeat-button').classList.add('active');
+
                     }
                 }
+                function search() {
+                    var keyword = document.getElementById("search-input").value;
+                    window.location.href = "/Home/Search?keyword=" + keyword;
+                }
+
+
+
 
             </script>
         </div>
         <div class="searchbox">
             <div><i class="fa-solid fa-magnifying-glass"></i></div>
-            <input type="text" placeholder="Search..">
-        </div>
-        <div class="accountbar">
-            <a href="@Url.Action("Login", "Account")"><div><i class="fa-solid fa-user"></i></div></a>
+            <form method="get" action="@Url.Action("ListSongs")" id="search-form" >
+                <input type="text" placeholder="Search.." name="searchQuery" id="search-input" value="@ViewBag.SearchQuery" onkeydown="if(event.keyCode==13) document.getElementById('search-form').submit()">
 
-            <div><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            </form>
         </div>
+        
+
+
+
+        <div class="accountbar">
+            <div class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a href="#">@User.Identity.Name</a></li>
+                        <li role="separator class="divider"></li>
+                        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <ul class="navbar-nav navbar-right">
+                                
+                                <li><a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+                            </ul>
+                        }
+                        
+                    }
+                    else
+                    {
+                        <li><a href="@Url.Action("Login", "Account")">Log in</a></li>
+                    }
+                </ul>
+            </div>
+
+
+            <style>
+                .dropdown {
+                    position: relative;
+                    display: inline-block;
+                }
+
+                .dropdown-menu {
+                    display: none;
+                    position: absolute;
+                    z-index: 1;
+                    top: 50px;
+                    background-color: #fff;
+                    border: 1px solid #ccc;
+                }
+
+                .dropdown:hover .dropdown-menu {
+                    display: block;
+                }
+
+                .dropdown-menu li {
+                    display: block;
+                    padding: 5px;
+                }
+
+                    .dropdown-menu li:hover {
+                        background-color: #ccc;
+                    }
+            </style>
+
+            <a href="@Url.Action("UploadNhac", "Home")"><div><i class="fa-solid fa-cloud-arrow-up"></i></div></a>
+        </div>
+
         @RenderBody()
     </div>
 
@@ -263,16 +395,7 @@
         let currentVolume = 100;
         let volumeIcon = document.querySelector(".pcontrols i");
 
-        function playSongAndChangeImg(linkbaihat, hinhbaihat) {
-            var audio = document.getElementById("song");
-            audio.src = linkbaihat;
-            audio.load();
-            audio.play();
-            var songImgs = document.querySelectorAll("#song-img");
-            for (var i = 0; i < songImgs.length; i++) {
-                songImgs[i].src = hinhbaihat;
-            }
-        }
+        
 
         function toggleMute() {
             if (song.volume == 0) {
@@ -291,6 +414,8 @@
             }
 
         }
+
+
         document.body.onkeyup = function (e) {
             if (e.code === 'Space') {
                 playPause();
@@ -300,7 +425,12 @@
             }
         };
         song.addEventListener('ended', function () {
-            skipSong();
+            if (isShuffleOn) {
+                shufflePlaylist();
+            }
+            else
+            skipSong(); 
+
         });
     </script>
     @RenderSection("scripts", false)

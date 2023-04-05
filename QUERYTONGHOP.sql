@@ -10,7 +10,19 @@ GO
 
 drop table [BaiHat]
 go
+drop table [Playlist]
+go
 
+CREATE TABLE [dbo].[Playlist](
+	[idPlaylist] INT IDENTITY(1,1) NOT NULL,
+	[tenplaylist] [nvarchar](100) NULL,
+	[hinh] [nvarchar](100) NULL,
+ CONSTRAINT [PK_dbo.Playlist] PRIMARY KEY CLUSTERED 
+(
+	[idPlaylist] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
 CREATE TABLE [dbo].[BaiHat](
 	[idbaihat] int IDENTITY(1,1) NOT NULL,
 	[idAlbum] [nchar](10) NULL,
@@ -27,58 +39,9 @@ CREATE TABLE [dbo].[BaiHat](
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[BaiHat]  WITH CHECK ADD  CONSTRAINT [FK_dbo.BaiHat_dbo.Album_idtheloai] FOREIGN KEY([idtheloai])
-REFERENCES [dbo].[Album] ([idAlbum])
-GO
-
-ALTER TABLE [dbo].[BaiHat] CHECK CONSTRAINT [FK_dbo.BaiHat_dbo.Album_idtheloai]
-GO
-
-ALTER TABLE [dbo].[BaiHat]  WITH CHECK ADD  CONSTRAINT [FK_dbo.BaiHat_dbo.Playlist_idbaihat] FOREIGN KEY([idbaihat])
-REFERENCES [dbo].[Playlist] ([idPlaylist])
-GO
-
-ALTER TABLE [dbo].[BaiHat] CHECK CONSTRAINT [FK_dbo.BaiHat_dbo.Playlist_idbaihat]
-GO
-
-ALTER TABLE [dbo].[BaiHat]  WITH CHECK ADD  CONSTRAINT [FK_dbo.BaiHat_dbo.TheLoai_idAlbum] FOREIGN KEY([idAlbum])
-REFERENCES [dbo].[TheLoai] ([idtheloai])
-GO
-
-ALTER TABLE [dbo].[BaiHat] CHECK CONSTRAINT [FK_dbo.BaiHat_dbo.TheLoai_idAlbum]
-GO
 
 
 
------------------------
-
-
-USE [MusicWebDB]
-GO
-
-/****** Object:  Table [dbo].[Playlist]    Script Date: 4/4/2023 11:47:47 AM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-drop table [Playlist]
-go
-
-CREATE TABLE [dbo].[Playlist](
-	[idPlaylist] INT IDENTITY(1,1) NOT NULL,
-	[tenplaylist] [nvarchar](100) NULL,
-	[hinh] [nvarchar](100) NULL,
- CONSTRAINT [PK_dbo.Playlist] PRIMARY KEY CLUSTERED 
-(
-	[idPlaylist] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-
-------------------------
 
 drop procedure [spAddNewAudioFile]
 go
@@ -110,13 +73,13 @@ begin
 insert into BaiHat(Tenbaihat,casi,linkbaihat,Hinhbaihat)   
 values (@Tenbaihat,@casi,@linkbaihat,@Hinhbaihat)   
 end
-
+go
 CREATE procedure [dbo].[spGetAllAudioFile]  
 as  
 begin  
 select idbaihat,Tenbaihat,casi,Hinhbaihat,linkbaihat from BaiHat 
 end 
-
+go
 CREATE PROCEDURE spGetAudioFileById
 (
     @id int
@@ -127,7 +90,7 @@ BEGIN
     FROM BaiHat
     WHERE idbaihat = @id
 END
-
+go
 CREATE PROCEDURE [dbo].[spDeleteAudioFile]
     @id INT
 AS
@@ -135,7 +98,7 @@ BEGIN
     DELETE FROM [BaiHat]
     WHERE idbaihat = @id
 END
-
+go
 CREATE PROCEDURE spGetAllPlayList
 AS
 BEGIN
@@ -150,7 +113,7 @@ BEGIN
     INSERT INTO Playlist (tenplaylist, hinh)
     VALUES (@tenplaylist, @hinh)
 END
-
+go
 CREATE PROCEDURE spDeletePlaylist
     @idPlaylist INT
 AS
@@ -159,4 +122,4 @@ BEGIN
     DELETE FROM [dbo].[Playlist]
     WHERE [idPlaylist] = @idPlaylist;
 END
-
+go
